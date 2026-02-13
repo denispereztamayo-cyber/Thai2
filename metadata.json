@@ -1,0 +1,8 @@
+
+{
+  "name": "ThaiVoyage AI",
+  "description": "A modern, premium tourism platform for Thailand featuring an integrated AI travel assistant powered by Gemini.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
