@@ -1,32 +1,33 @@
-# Connect to GitHub
+# GitHub Setup Instructions
 
-**Git is not installed on this computer.** I cannot automatically initialize the repository for you.
+I have successfully initialized the Git repository locally and committed your files.
 
-You have two options to proceed.
+## Next Step: Push to GitHub
 
-## Option 1: Install Git (Recommended)
+Since I cannot authenticate on your behalf, you need to perform the final step to push to GitHub.
 
-1.  Download and install Git from [git-scm.com](https://git-scm.com/downloads).
-2.  During installation, checking "Git Bash Here" and "Add to PATH" is recommended.
-3.  Once installed, restart your terminal/VS Code.
-4.  Run the following commands in the terminal:
+1.  **Create a Repository**:
+    -   Go to [github.com/new](https://github.com/new).
+    -   Create a new repository (name it whatever you like, e.g., `thaivoyage-ai`).
+    -   Do **NOT** initialize it with README, .gitignore, or License (keep it empty).
+
+2.  **Push the Code**:
+    -   Run the following commands in your terminal (I have engaged standard `git` commands, but if they fail, you may need to use the full path `"C:\Program Files\Git\bin\git.exe"`):
 
     ```bash
-    git init
-    git config user.name "denispereztamayo-cyber"
-    git config user.email "denis.pereztamayo@gmail.com"
-    git add .
-    git commit -m "Initial commit"
+    # Replace <REPO_NAME> with your actual repository name
     git branch -M main
-    
-    # Replace <REPO_NAME> with your new repository name
     git remote add origin https://github.com/denispereztamayo-cyber/<REPO_NAME>.git
     git push -u origin main
     ```
 
-## Option 2: Manual Upload (No Git Required)
+    *Note: If `git` is not found, try:*
+    ```bash
+    "C:\Program Files\Git\bin\git.exe" branch -M main
+    "C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/denispereztamayo-cyber/<REPO_NAME>.git
+    "C:\Program Files\Git\bin\git.exe" push -u origin main
+    ```
 
-1.  Go to [github.com/new](https://github.com/new) and create a repository.
-2.  I have created a zip file of your project: **`project.zip`** in this folder.
-3.  In your new GitHub repository, click **"uploading an existing file"**.
-4.  Drag and drop the contents of your project (or unzip `project.zip` and upload the files) to GitHub.
+3.  **Authentication**:
+    -   GitHub will ask for your username and password.
+    -   **Password**: You must use a **Personal Access Token (classic)**, not your email password.
