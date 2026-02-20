@@ -24,7 +24,7 @@ Since I cannot authenticate on your behalf, you need to perform the final step t
     *Note: If `git` is not found, try:*
     ```bash
     "C:\Program Files\Git\bin\git.exe" branch -M main
-    "C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/denispereztamayo-cyber/<REPO_NAME>.git
+    "C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/denispereztamayo-cyber/<thai2>.git
     "C:\Program Files\Git\bin\git.exe" push -u origin main
     ```
 
