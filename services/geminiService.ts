@@ -7,10 +7,11 @@ let chatSession: Chat | null = null;
  * Obtiene el cliente de IA utilizando la clave de API autorizada por el usuario.
  */
 const getAIClient = () => {
-  // Prioritize environment variable, fallback to hardcoded key for quick start/compatibility
-  // In Vercel, set GEMINI_API_KEY in the project settings
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY || "AIzaSyAqoKAr1ei1tJoqnlBVcKIzdEALV2JhLNw";
-  return new GoogleGenAI({ apiKey });
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  if (!apiKey) {
+    console.error("VITE_GEMINI_API_KEY is not set");
+  }
+  return new GoogleGenAI({ apiKey: apiKey || "" });
 };
 
 /**

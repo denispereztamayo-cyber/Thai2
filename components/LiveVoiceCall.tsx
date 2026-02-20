@@ -82,7 +82,10 @@ const LiveVoiceCall: React.FC = () => {
   const startCall = async () => {
     try {
       setStatus('connecting');
-      const apiKey = import.meta.env.VITE_GEMINI_API_KEY || "AIzaSyAqoKAr1ei1tJoqnlBVcKIzdEALV2JhLNw";
+      const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+      if (!apiKey) {
+        throw new Error("VITE_GEMINI_API_KEY is not set");
+      }
       const ai = new GoogleGenAI({ apiKey });
 
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
