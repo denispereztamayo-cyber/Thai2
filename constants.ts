@@ -9,7 +9,7 @@ export const DESTINATIONS: Destination[] = [
     name: 'Wat Arun (Temple of Dawn)',
     location: 'Bangkok',
     description: 'A stunning Buddhist temple on the west bank of the Chao Phraya River, known for its colorful spires and intricate mosaics.',
-    imageUrl: 'https://lcwtfqxnlmsmouvtdhfk.supabase.co/storage/v1/object/public/Imagenes/4600_t8afNwa2.jpg',
+    imageUrl: 'https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=800&q=80',
     rating: 4.8,
     tags: ['Culture', 'History', 'Landmark'],
     priceRange: 'Low'

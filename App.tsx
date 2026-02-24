@@ -13,7 +13,7 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col font-sans">
       <Header />
-      
+
       <main className="flex-grow">
         {/* Hero Section */}
         <section>
@@ -47,9 +47,9 @@ const App: React.FC = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div className="order-2 lg:order-1 relative rounded-2xl overflow-hidden shadow-2xl">
-                 <img 
-                  src="https://picsum.photos/800/800?random=20" 
-                  alt="Thai Culture" 
+                <img
+                  src="https://picsum.photos/800/800?random=20"
+                  alt="Thai Culture"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8">
@@ -59,7 +59,7 @@ const App: React.FC = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="order-1 lg:order-2">
                 <span className="text-secondary-500 font-bold text-sm uppercase tracking-wider mb-2 block">Cultural Immersion</span>
                 <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6">Embrace the Thai Way of Life</h2>
@@ -100,18 +100,18 @@ const App: React.FC = () => {
                 <div key={review.id} className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
                   <div className="flex items-center space-x-1 mb-4">
                     {[...Array(5)].map((_, i) => (
-                      <Star 
-                        key={i} 
-                        size={16} 
-                        className={i < review.rating ? "text-secondary-500 fill-secondary-500" : "text-slate-300"} 
+                      <Star
+                        key={i}
+                        size={16}
+                        className={i < review.rating ? "text-secondary-500 fill-secondary-500" : "text-slate-300"}
                       />
                     ))}
                   </div>
                   <p className="text-slate-600 italic mb-6">"{review.comment}"</p>
                   <div className="flex items-center">
-                    <img 
-                      src={review.avatarUrl} 
-                      alt={review.author} 
+                    <img
+                      src={review.avatarUrl}
+                      alt={review.author}
                       className="w-10 h-10 rounded-full object-cover mr-3"
                     />
                     <div>
@@ -138,15 +138,15 @@ const App: React.FC = () => {
                 Immerse yourself in the vibrant energy and serene beauty that makes every moment in Thailand unforgettable.
               </p>
             </div>
-            
+
             <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-white/5 aspect-video max-w-5xl mx-auto">
-              <video 
+              <video
                 className="w-full h-full object-cover"
-                autoPlay 
-                muted 
-                loop 
+                autoPlay
+                muted
+                loop
                 playsInline
-                src="https://lcwtfqxnlmsmouvtdhfk.supabase.co/storage/v1/object/public/Videos/flow.mp4"
+                src="https://cdn.pixabay.com/video/2016/09/21/5523-183786520_medium.mp4"
               >
                 Your browser does not support the video tag.
               </video>
@@ -157,7 +157,7 @@ const App: React.FC = () => {
       </main>
 
       <Footer />
-      
+
       {/* AI Chat Widget - Sticky */}
       <ChatWidget />
     </div>
