@@ -9,13 +9,13 @@ const ChatWidget: React.FC = () => {
     {
       id: 'init',
       role: 'model',
-      text: 'Sawasdee khrap! 🙏 I am Chang, your personal Thailand travel guide. How can I help you plan your adventure today?',
+      text: '¡Sawasdee khrap! 🙏 Soy Chang, tu guía personal de Tailandia Travel. ¿Cómo puedo ayudarte a planear tu aventura hoy?',
       timestamp: new Date()
     }
   ]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -73,64 +73,63 @@ const ChatWidget: React.FC = () => {
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end pointer-events-none">
-      
+
       {/* Chat Window */}
       {isOpen && (
-        <div className="pointer-events-auto bg-white w-[90vw] md:w-[400px] h-[500px] md:h-[600px] rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden mb-4 animate-in slide-in-from-bottom-10 fade-in duration-300 origin-bottom-right">
-          
+        <div className="pointer-events-auto bg-white w-[90vw] md:w-[400px] h-[500px] md:h-[600px] rounded-[2rem] shadow-2xl border border-slate-200 flex flex-col overflow-hidden mb-6 animate-in slide-in-from-bottom-10 fade-in duration-300 origin-bottom-right">
+
           {/* Header */}
-          <div className="bg-primary-600 p-4 flex justify-between items-center shrink-0">
-            <div className="flex items-center space-x-3">
-              <div className="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-                <Sparkles size={20} className="text-white" />
+          <div className="bg-gradient-to-r from-primary-600 to-primary-500 p-6 flex justify-between items-center shrink-0">
+            <div className="flex items-center space-x-4">
+              <div className="bg-white/20 p-2.5 rounded-2xl backdrop-blur-md shadow-lg">
+                <Sparkles size={24} className="text-white" />
               </div>
               <div>
-                <h3 className="text-white font-bold">Chang AI Guide</h3>
-                <p className="text-primary-100 text-xs flex items-center">
-                  <span className="w-2 h-2 bg-green-400 rounded-full mr-1.5 animate-pulse"></span>
-                  Online
+                <h3 className="text-white font-black tracking-tight leading-none">ThaiGuide Experto</h3>
+                <p className="text-primary-100 text-[10px] font-bold uppercase tracking-widest flex items-center mt-1.5">
+                  <span className="w-2 h-2 bg-emerald-400 rounded-full mr-2 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.5)]"></span>
+                  Disponible ahora
                 </p>
               </div>
             </div>
-            <button 
+            <button
               onClick={() => setIsOpen(false)}
-              className="text-white/80 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-full"
+              className="text-white/80 hover:text-white transition-all p-2 hover:bg-white/10 rounded-xl"
             >
-              <X size={20} />
+              <X size={24} />
             </button>
           </div>
 
           {/* Info Banner */}
-          <div className="bg-slate-50 px-4 py-2 border-b border-slate-100 flex items-start space-x-2">
-            <Info size={14} className="text-slate-400 mt-0.5 shrink-0" />
-            <p className="text-xs text-slate-500">Ask about temples, beaches, food, or specific destinations listed on our site.</p>
+          <div className="bg-slate-50 px-6 py-3 border-b border-slate-100 flex items-start space-x-3">
+            <Info size={16} className="text-primary-500 mt-0.5 shrink-0" />
+            <p className="text-[11px] text-slate-500 font-medium leading-tight">Pregunta sobre templos, playas, gastronomía o itinerarios personalizados.</p>
           </div>
 
           {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/50">
+          <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50/30">
             {messages.map((msg) => (
-              <div 
-                key={msg.id} 
+              <div
+                key={msg.id}
                 className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
-                <div 
-                  className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm ${
-                    msg.role === 'user' 
-                      ? 'bg-primary-600 text-white rounded-br-none' 
-                      : 'bg-white text-slate-700 border border-slate-100 rounded-bl-none'
-                  } ${msg.isError ? 'bg-red-50 text-red-600 border-red-100' : ''}`}
+                <div
+                  className={`max-w-[85%] rounded-2xl px-5 py-4 text-sm leading-relaxed shadow-sm ${msg.role === 'user'
+                    ? 'bg-primary-600 text-white rounded-br-none shadow-primary-500/20'
+                    : 'bg-white text-slate-700 border border-slate-100 rounded-bl-none'
+                    } ${msg.isError ? 'bg-red-50 text-red-600 border-red-100' : ''}`}
                 >
-                  <p className="whitespace-pre-wrap">{msg.text}</p>
-                  <span className={`text-[10px] block mt-1 opacity-70 ${msg.role === 'user' ? 'text-primary-100 text-right' : 'text-slate-400'}`}>
+                  <p className="whitespace-pre-wrap font-light">{msg.text}</p>
+                  <span className={`text-[10px] block mt-2 font-bold uppercase tracking-wider opacity-60 ${msg.role === 'user' ? 'text-primary-100 text-right' : 'text-slate-400'}`}>
                     {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
               </div>
             ))}
-            
+
             {isLoading && (
               <div className="flex justify-start">
-                <div className="bg-white border border-slate-100 rounded-2xl rounded-bl-none px-4 py-3 shadow-sm flex items-center space-x-2">
+                <div className="bg-white border border-slate-100 rounded-2xl rounded-bl-none px-6 py-4 shadow-sm flex items-center space-x-2">
                   <div className="w-2 h-2 bg-primary-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
                   <div className="w-2 h-2 bg-primary-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
                   <div className="w-2 h-2 bg-primary-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
@@ -141,26 +140,26 @@ const ChatWidget: React.FC = () => {
           </div>
 
           {/* Input Area */}
-          <div className="p-4 bg-white border-t border-slate-100 shrink-0">
-            <form 
+          <div className="p-6 bg-white border-t border-slate-100 shrink-0">
+            <form
               onSubmit={handleSendMessage}
-              className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-full px-4 py-2 focus-within:ring-2 focus-within:ring-primary-500/20 focus-within:border-primary-500 transition-all"
+              className="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3 focus-within:ring-4 focus-within:ring-primary-500/10 focus-within:border-primary-500 transition-all"
             >
               <input
                 ref={inputRef}
                 type="text"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                placeholder="Ask about Thailand..."
-                className="flex-1 bg-transparent border-none outline-none text-slate-800 placeholder:text-slate-400 text-sm"
+                placeholder="¿A dónde quieres ir en Tailandia?"
+                className="flex-1 bg-transparent border-none outline-none text-slate-800 placeholder:text-slate-400 text-sm font-light"
                 disabled={isLoading}
               />
-              <button 
+              <button
                 type="submit"
                 disabled={!inputText.trim() || isLoading}
-                className="p-2 bg-primary-600 text-white rounded-full hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+                className="p-3 bg-primary-600 text-white rounded-xl hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-primary-500/30"
               >
-                <Send size={16} />
+                <Send size={18} />
               </button>
             </form>
           </div>
@@ -170,11 +169,10 @@ const ChatWidget: React.FC = () => {
       {/* Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`pointer-events-auto shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-110 flex items-center justify-center w-14 h-14 rounded-full ${
-          isOpen ? 'bg-slate-800 text-white rotate-90' : 'bg-gradient-to-tr from-primary-500 to-secondary-500 text-white'
-        }`}
+        className={`pointer-events-auto shadow-[0_10px_40px_rgba(0,0,0,0.2)] hover:shadow-primary-500/40 transition-all duration-500 transform hover:scale-110 flex items-center justify-center w-16 h-16 rounded-2xl ${isOpen ? 'bg-slate-900 text-white rotate-90' : 'bg-gradient-to-tr from-primary-600 to-secondary-500 text-white'
+          }`}
       >
-        {isOpen ? <X size={24} /> : <MessageCircle size={28} />}
+        {isOpen ? <X size={32} /> : <MessageCircle size={32} />}
       </button>
 
     </div>
