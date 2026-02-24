@@ -86,101 +86,119 @@ const LiveVoiceCall: React.FC = () => {
       if (!apiKey) {
         throw new Error("VITE_GEMINI_API_KEY is not set");
       }
-      const ai = new GoogleGenAI({ apiKey });
+      const wsUrl = `wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent?key=${apiKey}`;
+      const ws = new WebSocket(wsUrl);
 
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const inputCtx = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
       const outputCtx = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
 
-      const sessionPromise = ai.live.connect({
-        model: 'gemini-2.0-flash-exp',
-        config: {
-          responseModalities: [Modality.AUDIO],
-          speechConfig: {
-            voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } }, // Female profile
-          },
-          systemInstruction: `
+      ws.onopen = () => {
+        setStatus('connected');
+        setIsActive(true);
+
+        // Send initial setup config
+        ws.send(JSON.stringify({
+          setup: {
+            model: 'models/gemini-2.0-flash-exp',
+            generationConfig: {
+              responseModalities: ["AUDIO"],
+              speechConfig: {
+                voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } }
+              }
+            },
+            systemInstruction: {
+              parts: [{
+                text: `
             Eres Isabela, una concierge de viajes de lujo para ThaiVoyage. 
             PERSONALIDAD: Eres extremadamente amable, profesional, cercana y entusiasta.
             ACENTO: Tienes un acento colombiano neutro, profesional y claro. Evita usar modismos regionales muy marcados.
             VOCABULARIO: Usa un lenguaje natural y cálido, propio de Colombia pero comprensible internacionalmente. Expresiones como "claro que sí", "con mucho gusto", "excelente", "te cuento".
             CONOCIMIENTO: Eres experta en Tailandia. Tu meta es asesorar al usuario sobre viajes a Tailandia con toda la hospitalidad y calidez paisa. 
             Habla de forma fluida y natural, como si estuvieras en una llamada telefónica real.
-          `,
-        },
-        callbacks: {
-          onopen: () => {
-            setStatus('connected');
-            setIsActive(true);
+            ` }]
+            }
+          }
+        }));
 
-            const source = inputCtx.createMediaStreamSource(stream);
-            const scriptProcessor = inputCtx.createScriptProcessor(4096, 1, 1);
+        const source = inputCtx.createMediaStreamSource(stream);
+        const scriptProcessor = inputCtx.createScriptProcessor(4096, 1, 1);
 
-            scriptProcessor.onaudioprocess = (e) => {
-              const inputData = e.inputBuffer.getChannelData(0);
-              const l = inputData.length;
-              const int16 = new Int16Array(l);
-              for (let i = 0; i < l; i++) {
-                int16[i] = inputData[i] * 32768;
-              }
-              const pcmBlob = {
-                data: encode(new Uint8Array(int16.buffer)),
+        scriptProcessor.onaudioprocess = (e) => {
+          if (ws.readyState !== WebSocket.OPEN) return;
+          const inputData = e.inputBuffer.getChannelData(0);
+          const l = inputData.length;
+          const int16 = new Int16Array(l);
+          for (let i = 0; i < l; i++) {
+            int16[i] = inputData[i] * 32768;
+          }
+
+          ws.send(JSON.stringify({
+            realtimeInput: {
+              mediaChunks: [{
                 mimeType: 'audio/pcm;rate=16000',
-              };
-
-              sessionPromise.then(session => {
-                session.sendRealtimeInput({ media: pcmBlob });
-              });
-            };
-
-            source.connect(scriptProcessor);
-            scriptProcessor.connect(inputCtx.destination);
-
-            audioContextRes.current = {
-              input: inputCtx,
-              output: outputCtx,
-              stream: stream,
-              processor: scriptProcessor
-            };
-          },
-          onmessage: async (message) => {
-            const base64Audio = message.serverContent?.modelTurn?.parts[0]?.inlineData?.data;
-            if (base64Audio) {
-              setIsSpeaking(true);
-              const currentOutputCtx = audioContextRes.current?.output;
-              if (currentOutputCtx) {
-                nextStartTime.current = Math.max(nextStartTime.current, currentOutputCtx.currentTime);
-                const audioBuffer = await decodeAudioData(decode(base64Audio), currentOutputCtx, 24000, 1);
-                const source = currentOutputCtx.createBufferSource();
-                source.buffer = audioBuffer;
-                source.connect(currentOutputCtx.destination);
-                source.addEventListener('ended', () => {
-                  sources.current.delete(source);
-                  if (sources.current.size === 0) setIsSpeaking(false);
-                });
-                source.start(nextStartTime.current);
-                nextStartTime.current += audioBuffer.duration;
-                sources.current.add(source);
-              }
+                data: encode(new Uint8Array(int16.buffer))
+              }]
             }
+          }));
+        };
 
-            if (message.serverContent?.interrupted) {
-              sources.current.forEach(s => s.stop());
-              sources.current.clear();
-              nextStartTime.current = 0;
-              setIsSpeaking(false);
-            }
-          },
-          onclose: () => stopCall(),
-          onerror: (e) => {
-            console.error("Live API Error:", e);
-            setStatus('error');
-            setTimeout(stopCall, 3000);
+        source.connect(scriptProcessor);
+        scriptProcessor.connect(inputCtx.destination);
+
+        audioContextRes.current = {
+          input: inputCtx,
+          output: outputCtx,
+          stream: stream,
+          processor: scriptProcessor
+        };
+      };
+
+      ws.onmessage = async (event) => {
+        let message;
+        if (event.data instanceof Blob) {
+          const text = await event.data.text();
+          message = JSON.parse(text);
+        } else {
+          message = JSON.parse(event.data);
+        }
+
+        const base64Audio = message?.serverContent?.modelTurn?.parts?.[0]?.inlineData?.data;
+        if (base64Audio) {
+          setIsSpeaking(true);
+          const currentOutputCtx = audioContextRes.current?.output;
+          if (currentOutputCtx) {
+            nextStartTime.current = Math.max(nextStartTime.current, currentOutputCtx.currentTime);
+            const audioBuffer = await decodeAudioData(decode(base64Audio), currentOutputCtx, 24000, 1);
+            const source = currentOutputCtx.createBufferSource();
+            source.buffer = audioBuffer;
+            source.connect(currentOutputCtx.destination);
+            source.addEventListener('ended', () => {
+              sources.current.delete(source);
+              if (sources.current.size === 0) setIsSpeaking(false);
+            });
+            source.start(nextStartTime.current);
+            nextStartTime.current += audioBuffer.duration;
+            sources.current.add(source);
           }
         }
-      });
 
-      sessionRef.current = await sessionPromise;
+        if (message?.serverContent?.interrupted) {
+          sources.current.forEach(s => s.stop());
+          sources.current.clear();
+          nextStartTime.current = 0;
+          setIsSpeaking(false);
+        }
+      };
+
+      ws.onclose = () => stopCall();
+      ws.onerror = (e) => {
+        console.error("Native Live API Error:", e);
+        setStatus('error');
+        setTimeout(stopCall, 3000);
+      };
+
+      sessionRef.current = ws;
 
     } catch (err) {
       console.error("Failed to start voice call:", err);
