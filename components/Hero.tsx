@@ -6,9 +6,9 @@ const Hero: React.FC = () => {
     <div className="relative h-[90vh] min-h-[600px] flex items-center justify-center overflow-hidden">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
-        <img 
-          src="https://picsum.photos/1920/1080?random=99" 
-          alt="Thailand Scenery" 
+        <img
+          src="https://picsum.photos/1920/1080?random=99"
+          alt="Thailand Scenery"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/40 to-slate-900/30"></div>
@@ -20,13 +20,13 @@ const Hero: React.FC = () => {
           <Sparkles size={16} className="text-secondary-500" />
           <span className="text-white/90 text-sm font-medium tracking-wide">Discover the Land of Smiles</span>
         </div>
-        
+
         <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight tracking-tight drop-shadow-lg">
           Experience the Magic <br /> of <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary-500 to-primary-400">Thailand</span>
         </h1>
-        
+
         <p className="text-lg md:text-xl text-slate-200 mb-10 max-w-2xl mx-auto leading-relaxed">
-          From the bustling streets of Bangkok to the serene beaches of Krabi. 
+          From the bustling streets of Bangkok to the serene beaches of Krabi.
           Let our AI guide help you craft the perfect itinerary tailored just for you.
         </p>
 
