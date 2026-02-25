@@ -9,8 +9,8 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-1">
             <div className="flex items-center space-x-3 text-white mb-6">
-              <div className="w-10 h-10 rounded-lg overflow-hidden shadow-xl border border-white/10">
-                <img src="/Tailandia.jpg" alt="Logo" className="w-full h-full object-cover" />
+              <div className="w-16 h-16 rounded-xl overflow-hidden shadow-2xl border border-white/10 bg-white/5 flex items-center justify-center p-1">
+                <img src="/logotailand.png" alt="Logo" className="w-full h-full object-contain" />
               </div>
               <span className="text-xl font-black tracking-tighter">TAILANDIA<span className="text-primary-500">TRAVEL</span></span>
             </div>
