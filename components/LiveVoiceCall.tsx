@@ -93,7 +93,7 @@ const LiveVoiceCall: React.FC = () => {
       const inputCtx = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
       const outputCtx = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
 
-      ws.onopen = () => {
+      ws.onopen = async () => {
         setStatus('connected');
         setIsActive(true);
 
@@ -101,25 +101,28 @@ const LiveVoiceCall: React.FC = () => {
         ws.send(JSON.stringify({
           setup: {
             model: 'models/gemini-2.0-flash-exp',
-            generation_config: {
-              response_modalities: ["audio"],
-              speech_config: {
-                voice_config: { prebuilt_voice_config: { voice_name: 'Kore' } }
+            generationConfig: {
+              responseModalities: ["AUDIO"],
+              speechConfig: {
+                voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } }
               }
             },
-            system_instruction: {
+            systemInstruction: {
               parts: [{
                 text: `
             Eres Isabela, una concierge de viajes de lujo para Tailandia Travel. 
             PERSONALIDAD: Eres extremadamente amable, profesional, cercana y entusiasta.
-            ACENTO: Tienes un acento colombiano neutro, profesional y claro. Evita usar modismos regionales muy marcados.
-            VOCABULARIO: Usa un lenguaje natural y cálido, propio de Colombia pero comprensible internacionalmente. Expresiones como "claro que sí", "con mucho gusto", "excelente", "te cuento".
-            CONOCIMIENTO: Eres experta en Tailandia. Tu meta es asesorar al usuario sobre viajes a Tailandia con toda la hospitalidad y calidez paisa. 
+            ACENTO: Tienes un acento Latinoamericano Neutro, profesional y claro. Evita usar regionalismos.
+            VOCABULARIO: Usa un lenguaje natural, sofisticado y cálido, comprensible para cualquier hispanohablante.
+            CONOCIMIENTO: Eres experta en Tailandia. Tu meta es asesorar al usuario sobre viajes a Tailandia con una hospitalidad de clase mundial.
             Habla de forma fluida y natural, como si estuvieras en una llamada telefónica real.
             ` }]
             }
           }
         }));
+
+        await inputCtx.resume();
+        await outputCtx.resume();
 
         const source = inputCtx.createMediaStreamSource(stream);
         const scriptProcessor = inputCtx.createScriptProcessor(4096, 1, 1);
@@ -134,9 +137,9 @@ const LiveVoiceCall: React.FC = () => {
           }
 
           ws.send(JSON.stringify({
-            realtime_input: {
-              media_chunks: [{
-                mime_type: 'audio/pcm;rate=16000',
+            realtimeInput: {
+              mediaChunks: [{
+                mimeType: 'audio/pcm;rate=16000',
                 data: encode(new Uint8Array(int16.buffer))
               }]
             }
@@ -163,7 +166,7 @@ const LiveVoiceCall: React.FC = () => {
           message = JSON.parse(event.data);
         }
 
-        const base64Audio = message?.server_content?.model_turn?.parts?.[0]?.inline_data?.data;
+        const base64Audio = message?.serverContent?.modelTurn?.parts?.[0]?.inlineData?.data;
         if (base64Audio) {
           setIsSpeaking(true);
           const currentOutputCtx = audioContextRes.current?.output;
@@ -183,7 +186,7 @@ const LiveVoiceCall: React.FC = () => {
           }
         }
 
-        if (message?.server_content?.interrupted) {
+        if (message?.serverContent?.interrupted) {
           sources.current.forEach(s => s.stop());
           sources.current.clear();
           nextStartTime.current = 0;
@@ -227,7 +230,7 @@ const LiveVoiceCall: React.FC = () => {
                 Habla con <span className="text-secondary-400">Isabela</span>
               </h2>
               <p className="text-primary-100/80 text-lg mb-8 leading-relaxed">
-                Nuestra concierge senior está lista para asesorarte en tiempo real. Disfruta de una charla cálida y profesional con el toque único del Eje Cafetero.
+                Nuestra concierge senior está lista para asesorarte en tiempo real. Disfruta de una charla cálida, profesional y experta.
               </p>
 
               <div className="flex flex-col items-center md:items-start space-y-4">
