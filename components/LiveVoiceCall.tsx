@@ -118,12 +118,6 @@ Habla de forma fluida y natural, como si estuvieras en una llamada telefónica r
                   }
                 }
               }
-            },
-            realtime_input_config: {
-              activity_handling: "START_OF_ACTIVITY_INTERRUPTS",
-              automatic_activity_detection: {
-                enable_activity_detection: true
-              }
             }
           }
         }));
