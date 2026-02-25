@@ -101,13 +101,13 @@ const LiveVoiceCall: React.FC = () => {
         ws.send(JSON.stringify({
           setup: {
             model: 'models/gemini-2.0-flash-exp',
-            generationConfig: {
-              responseModalities: ["AUDIO"],
-              speechConfig: {
-                voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } }
+            generation_config: {
+              response_modalities: ["audio"],
+              speech_config: {
+                voice_config: { prebuilt_voice_config: { voice_name: 'Kore' } }
               }
             },
-            systemInstruction: {
+            system_instruction: {
               parts: [{
                 text: `
             Eres Isabela, una concierge de viajes de lujo para Tailandia Travel. 
@@ -134,9 +134,9 @@ const LiveVoiceCall: React.FC = () => {
           }
 
           ws.send(JSON.stringify({
-            realtimeInput: {
-              mediaChunks: [{
-                mimeType: 'audio/pcm;rate=16000',
+            realtime_input: {
+              media_chunks: [{
+                mime_type: 'audio/pcm;rate=16000',
                 data: encode(new Uint8Array(int16.buffer))
               }]
             }
@@ -163,7 +163,7 @@ const LiveVoiceCall: React.FC = () => {
           message = JSON.parse(event.data);
         }
 
-        const base64Audio = message?.serverContent?.modelTurn?.parts?.[0]?.inlineData?.data;
+        const base64Audio = message?.server_content?.model_turn?.parts?.[0]?.inline_data?.data;
         if (base64Audio) {
           setIsSpeaking(true);
           const currentOutputCtx = audioContextRes.current?.output;
@@ -183,7 +183,7 @@ const LiveVoiceCall: React.FC = () => {
           }
         }
 
-        if (message?.serverContent?.interrupted) {
+        if (message?.server_content?.interrupted) {
           sources.current.forEach(s => s.stop());
           sources.current.clear();
           nextStartTime.current = 0;

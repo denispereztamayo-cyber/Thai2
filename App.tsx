@@ -158,7 +158,7 @@ const App: React.FC = () => {
                 muted
                 loop
                 playsInline
-                src="https://cdn.pixabay.com/video/2016/09/21/5523-183786520_medium.mp4"
+                src="/flow.mp4"
               >
                 Your browser does not support the video tag.
               </video>
