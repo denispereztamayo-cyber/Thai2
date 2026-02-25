@@ -84,7 +84,8 @@ const LiveVoiceCall: React.FC = () => {
       if (!apiKey) {
         throw new Error("VITE_GEMINI_API_KEY is not set");
       }
-      const wsUrl = `wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent?key=${apiKey}`;
+      const wsUrl = `wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent?key=${apiKey}`;
+      console.log("Connecting to:", wsUrl);
       const ws = new WebSocket(wsUrl);
 
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -95,8 +96,7 @@ const LiveVoiceCall: React.FC = () => {
         setStatus('connected');
         setIsActive(true);
 
-        // Setup config CORREGIDO - Estructura plana según Gemini Live API
-        ws.send(JSON.stringify({
+        const setupMsg = {
           setup: {
             model: 'models/gemini-2.5-flash-native-audio-preview-12-2025',
             system_instruction: {
@@ -120,7 +120,9 @@ Habla de forma fluida y natural, como si estuvieras en una llamada telefónica r
               }
             }
           }
-        }));
+        };
+        console.log("Sending Setup:", setupMsg);
+        ws.send(JSON.stringify(setupMsg));
 
         await inputCtx.resume();
         await outputCtx.resume();
@@ -165,6 +167,10 @@ Habla de forma fluida y natural, como si estuvieras en una llamada telefónica r
           message = JSON.parse(text);
         } else {
           message = JSON.parse(event.data);
+        }
+
+        if (message?.server_content) {
+          console.log("Incoming Server Content:", message.server_content);
         }
 
         // Manejo de audio response
