@@ -1,12 +1,12 @@
 
 import React from 'react';
-import { 
-  MapPin, 
-  Star, 
-  Menu, 
-  X, 
-  Send, 
-  MessageCircle, 
+import {
+  MapPin,
+  Star,
+  Menu,
+  X,
+  Send,
+  MessageCircle,
   Sparkles,
   Compass,
   ArrowRight,
@@ -16,16 +16,21 @@ import {
   Mic,
   MicOff,
   Volume2,
-  Waves
+  Waves,
+  Calendar,
+  Users,
+  Hotel,
+  Map,
+  CheckCircle2
 } from 'lucide-react';
 
-export { 
-  MapPin, 
-  Star, 
-  Menu, 
-  X, 
-  Send, 
-  MessageCircle, 
+export {
+  MapPin,
+  Star,
+  Menu,
+  X,
+  Send,
+  MessageCircle,
   Sparkles,
   Compass,
   ArrowRight,
@@ -35,5 +40,10 @@ export {
   Mic,
   MicOff,
   Volume2,
-  Waves
+  Waves,
+  Calendar,
+  Users,
+  Hotel,
+  Map,
+  CheckCircle2
 };

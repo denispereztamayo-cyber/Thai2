@@ -9,7 +9,7 @@ export const DESTINATIONS: Destination[] = [
     name: 'Wat Arun (Temple of Dawn)',
     location: 'Bangkok',
     description: 'A stunning Buddhist temple on the west bank of the Chao Phraya River, known for its colorful spires and intricate mosaics.',
-    imageUrl: 'https://images.unsplash.com/photo-1596765103004-411a0da1d89b?w=800&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1528641938870-1f9f257b494d?w=800&q=80',
     rating: 4.8,
     tags: ['Culture', 'History', 'Landmark'],
     priceRange: 'Low'
@@ -19,7 +19,7 @@ export const DESTINATIONS: Destination[] = [
     name: 'Maya Bay',
     location: 'Ko Phi Phi Leh',
     description: 'The iconic beach made famous by "The Beach" movie. Crystal clear turquoise waters surrounded by towering limestone cliffs.',
-    imageUrl: 'https://images.unsplash.com/photo-1528181304800-2f5402924404?w=800&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800&q=80',
     rating: 4.9,
     tags: ['Nature', 'Beach', 'Swimming'],
     priceRange: 'Medium'
