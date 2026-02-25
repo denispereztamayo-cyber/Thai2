@@ -1,9 +1,7 @@
-
 import React, { useState, useRef, useEffect } from 'react';
-import { GoogleGenAI, Modality } from '@google/genai';
 import { Phone, PhoneOff, Waves, Sparkles, Mic } from './Icon.tsx';
 
-// Helper functions for audio processing as per Google GenAI guidelines
+// Helper functions for audio processing
 function encode(bytes: Uint8Array) {
   let binary = '';
   const len = bytes.byteLength;
@@ -97,26 +95,35 @@ const LiveVoiceCall: React.FC = () => {
         setStatus('connected');
         setIsActive(true);
 
-        // Send initial setup config
+        // Setup config CORREGIDO - Estructura plana según Gemini Live API
         ws.send(JSON.stringify({
           setup: {
-            model: 'models/gemini-2.0-flash-exp',
+            model: 'models/gemini-2.5-flash-native-audio-preview-12-2025',
+            system_instruction: {
+              parts: [{
+                text: `Eres Isabela, una concierge de viajes de lujo para Tailandia Travel. 
+PERSONALIDAD: Eres extremadamente amable, profesional, cercana y entusiasta.
+ACENTO: Tienes un acento Latinoamericano Neutro (LatAm), profesional y claro. Evita regionalismos.
+VOCABULARIO: Usa un lenguaje natural, sofisticado y cálido, comprensible para cualquier hispanohablante.
+CONOCIMIENTO: Eres experta en Tailandia. Tu meta es asesorar al usuario sobre viajes a Tailandia con una hospitalidad de clase mundial.
+Habla de forma fluida y natural, como si estuvieras en una llamada telefónica real.`
+              }]
+            },
             generation_config: {
               response_modalities: ["AUDIO"],
               speech_config: {
-                voice_config: { prebuilt_voice_config: { voice_name: 'Kore' } }
+                voice_config: {
+                  prebuilt_voice_config: {
+                    voice_name: 'Kore'
+                  }
+                }
               }
             },
-            system_instruction: {
-              parts: [{
-                text: `
-            Eres Isabela, una concierge de viajes de lujo para Tailandia Travel. 
-            PERSONALIDAD: Eres extremadamente amable, profesional, cercana y entusiasta.
-            ACENTO: Tienes un acento Latinoamericano Neutro (LatAm), profesional y claro. Evita regionalismos.
-            VOCABULARIO: Usa un lenguaje natural, sofisticado y cálido, comprensible para cualquier hispanohablante.
-            CONOCIMIENTO: Eres experta en Tailandia. Tu meta es asesorar al usuario sobre viajes a Tailandia con hospitalidad premium.
-            Habla de forma fluida y natural, como si estuvieras en una llamada telefónica real.
-            ` }]
+            realtime_input_config: {
+              activity_handling: "START_OF_ACTIVITY_INTERRUPTS",
+              automatic_activity_detection: {
+                enable_activity_detection: true
+              }
             }
           }
         }));
@@ -166,6 +173,7 @@ const LiveVoiceCall: React.FC = () => {
           message = JSON.parse(event.data);
         }
 
+        // Manejo de audio response
         const base64Audio = message?.server_content?.model_turn?.parts?.[0]?.inline_data?.data;
         if (base64Audio) {
           setIsSpeaking(true);
@@ -186,6 +194,7 @@ const LiveVoiceCall: React.FC = () => {
           }
         }
 
+        // Manejo de interrupciones
         if (message?.server_content?.interrupted) {
           sources.current.forEach(s => s.stop());
           sources.current.clear();
@@ -194,7 +203,11 @@ const LiveVoiceCall: React.FC = () => {
         }
       };
 
-      ws.onclose = () => stopCall();
+      ws.onclose = (event) => {
+        console.log("WebSocket Closed:", event.code, event.reason);
+        stopCall();
+      };
+
       ws.onerror = (e) => {
         console.error("Native Live API Error:", e);
         setStatus('error');
@@ -211,7 +224,6 @@ const LiveVoiceCall: React.FC = () => {
 
   return (
     <section className="py-20 bg-primary-900 relative overflow-hidden">
-      {/* Background patterns */}
       <div className="absolute inset-0 opacity-10 pointer-events-none">
         <div className="absolute top-0 left-0 w-96 h-96 bg-primary-500 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2"></div>
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary-500 rounded-full blur-[120px] translate-x-1/2 translate-y-1/2"></div>
@@ -260,7 +272,6 @@ const LiveVoiceCall: React.FC = () => {
             </div>
 
             <div className="relative flex justify-center items-center">
-              {/* Isabela Avatar Visualizer */}
               <div className={`relative w-64 h-64 rounded-full border-4 ${isActive ? 'border-emerald-400' : 'border-white/20'} flex items-center justify-center transition-colors duration-500`}>
                 <div className="absolute inset-0 rounded-full bg-primary-800/50 backdrop-blur-sm overflow-hidden">
                   <img
@@ -270,7 +281,6 @@ const LiveVoiceCall: React.FC = () => {
                   />
                 </div>
 
-                {/* Pulse animations when active */}
                 {isActive && (
                   <>
                     <div className="absolute -inset-4 border border-emerald-400/30 rounded-full animate-ping"></div>
@@ -278,7 +288,6 @@ const LiveVoiceCall: React.FC = () => {
                   </>
                 )}
 
-                {/* Speaking indicator */}
                 {isSpeaking && (
                   <div className="absolute -bottom-4 bg-emerald-500 text-white px-4 py-1 rounded-full text-xs font-bold animate-bounce flex items-center space-x-2">
                     <Waves size={14} />
@@ -287,7 +296,6 @@ const LiveVoiceCall: React.FC = () => {
                 )}
               </div>
 
-              {/* Status Badge */}
               <div className="absolute top-0 right-0 md:-right-4 bg-white/10 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/20 flex items-center space-x-2">
                 <div className={`w-2 h-2 rounded-full ${isActive ? 'bg-emerald-400 animate-pulse' : 'bg-white/30'}`}></div>
                 <span className="text-white text-xs font-medium">
