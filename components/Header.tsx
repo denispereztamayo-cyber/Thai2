@@ -30,7 +30,7 @@ const Header: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
             {/* Logo */}
-            <div className="flex items-center space-x-3 group cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+            <div className="flex-shrink-0 flex items-center space-x-3 group cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
               <div className={`transition-all duration-500 ${isScrolled ? 'w-12 h-12' : 'w-20 h-20'} overflow-hidden rounded-xl shadow-lg group-hover:scale-110 flex items-center justify-center bg-white/5`}>
                 <img src="/logotailand.png" alt="Tailandia Travel Logo" className="w-full h-full object-contain" />
               </div>

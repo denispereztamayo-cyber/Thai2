@@ -101,20 +101,20 @@ const LiveVoiceCall: React.FC = () => {
         ws.send(JSON.stringify({
           setup: {
             model: 'models/gemini-2.0-flash-exp',
-            generationConfig: {
-              responseModalities: ["AUDIO"],
-              speechConfig: {
-                voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } }
+            generation_config: {
+              response_modalities: ["AUDIO"],
+              speech_config: {
+                voice_config: { prebuilt_voice_config: { voice_name: 'Kore' } }
               }
             },
-            systemInstruction: {
+            system_instruction: {
               parts: [{
                 text: `
             Eres Isabela, una concierge de viajes de lujo para Tailandia Travel. 
             PERSONALIDAD: Eres extremadamente amable, profesional, cercana y entusiasta.
-            ACENTO: Tienes un acento Latinoamericano Neutro, profesional y claro. Evita usar regionalismos.
+            ACENTO: Tienes un acento Latinoamericano Neutro (LatAm), profesional y claro. Evita regionalismos.
             VOCABULARIO: Usa un lenguaje natural, sofisticado y cálido, comprensible para cualquier hispanohablante.
-            CONOCIMIENTO: Eres experta en Tailandia. Tu meta es asesorar al usuario sobre viajes a Tailandia con una hospitalidad de clase mundial.
+            CONOCIMIENTO: Eres experta en Tailandia. Tu meta es asesorar al usuario sobre viajes a Tailandia con hospitalidad premium.
             Habla de forma fluida y natural, como si estuvieras en una llamada telefónica real.
             ` }]
             }
@@ -137,9 +137,9 @@ const LiveVoiceCall: React.FC = () => {
           }
 
           ws.send(JSON.stringify({
-            realtimeInput: {
-              mediaChunks: [{
-                mimeType: 'audio/pcm;rate=16000',
+            realtime_input: {
+              media_chunks: [{
+                mime_type: 'audio/pcm;rate=16000',
                 data: encode(new Uint8Array(int16.buffer))
               }]
             }
@@ -166,7 +166,7 @@ const LiveVoiceCall: React.FC = () => {
           message = JSON.parse(event.data);
         }
 
-        const base64Audio = message?.serverContent?.modelTurn?.parts?.[0]?.inlineData?.data;
+        const base64Audio = message?.server_content?.model_turn?.parts?.[0]?.inline_data?.data;
         if (base64Audio) {
           setIsSpeaking(true);
           const currentOutputCtx = audioContextRes.current?.output;
@@ -186,7 +186,7 @@ const LiveVoiceCall: React.FC = () => {
           }
         }
 
-        if (message?.serverContent?.interrupted) {
+        if (message?.server_content?.interrupted) {
           sources.current.forEach(s => s.stop());
           sources.current.clear();
           nextStartTime.current = 0;
